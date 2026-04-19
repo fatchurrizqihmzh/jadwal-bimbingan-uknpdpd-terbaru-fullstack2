@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Jadwal First Taker UKMPPD 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f4f0;--sf:#fff;--s2:#f9f8f5;--bd:#e2e0d8;--bds:#c5c2b8;--tx:#1a1917;--mu:#6b6860;--fa:#a09d96;--bl:#1a56db;--bll:#ebf0ff;--blm:#c3d3ff;--gr:#0a7c4a;--grl:#e8f7ef;--grm:#b6e8ce;--am:#b45309;--aml:#fef3cd;--rd:#b91c1c;--rdl:#fdecea;--tl:#0f766e;--tll:#e0faf7;--zm:#6d28d9;--zml:#f5f3ff;--zmm:#ddd6fe;--r:8px;--rl:12px;--sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);--shm:0 4px 14px rgba(0,0,0,.09),0 2px 4px rgba(0,0,0,.04)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;min-height:100vh}
+
+/* HEADER */
+.hd{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 1rem;position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
+.hdi{max-width:1700px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;min-height:52px;gap:.5rem;flex-wrap:wrap;padding:.5rem 0}
+.ht{font-size:14px;font-weight:700;letter-spacing:-.3px;line-height:1.3}
+.hs{font-size:10.5px;color:var(--mu)}
+.hr{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:2px;background:var(--bg);border-radius:var(--r);padding:3px;border:1px solid var(--bd)}
+.tb{padding:6px 14px;border-radius:6px;border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:500;color:var(--mu);cursor:pointer;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.tb.on{background:var(--sf);color:var(--tx);box-shadow:var(--sh)}
+
+/* SYNC STATUS */
+.sync-bar{background:var(--sf);border-bottom:1px solid var(--bd);padding:6px 1rem;font-size:10.5px;color:var(--mu);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sync-inner{max-width:1700px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--fa);flex-shrink:0;transition:background .3s}
+.sync-dot.ok{background:#22c55e}.sync-dot.err{background:#ef4444}.sync-dot.loading{background:var(--am);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sync-cfg-btn{padding:3px 9px;border-radius:5px;border:1px solid var(--bd);background:var(--sf);font-family:inherit;font-size:10.5px;cursor:pointer;color:var(--bl);font-weight:500}
+
+/* PROGRESS */
+.pb{background:var(--sf);border-bottom:1px solid var(--bd);padding:8px 1rem}
+.pbi{max-width:1700px;margin:0 auto;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.pi{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--mu);white-space:nowrap}
+.pt{width:80px;height:5px;background:var(--bd);border-radius:99px;overflow:hidden;flex-shrink:0}
+.pf{height:100%;border-radius:99px;transition:width .4s}
+.fb{background:var(--bl)}.fa2{background:var(--am)}
+.pp{font-weight:700;color:var(--tx);font-size:11px;min-width:32px}
+
+/* MAIN */
+.mn{max-width:1700px;margin:0 auto;padding:1rem 1rem 4rem}
+.pn{display:none}.pn.on{display:block}
+
+/* WEEK */
+.ws{margin-bottom:1.5rem}
+.wh{display:flex;align-items:center;gap:8px;margin-bottom:.6rem;padding:8px 12px;background:var(--tx);color:#fff;border-radius:var(--r);font-size:12px;font-weight:600;letter-spacing:.4px}
+.wd{width:7px;height:7px;border-radius:50%;background:#fff;opacity:.5;flex-shrink:0}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.25rem}
+.sc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px;box-shadow:var(--sh)}
+.sl{font-size:9.5px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.sv{font-size:20px;font-weight:700;line-height:1}
+.ss{font-size:9.5px;color:var(--fa);margin-top:2px}
+
+/* TABLE */
+.ts{overflow-x:auto;border-radius:var(--rl);box-shadow:var(--shm);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;background:var(--sf);font-size:12px}
+table th{background:var(--s2);font-weight:600;font-size:10px;color:var(--mu);padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--bd);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+table td{padding:8px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--s2)}
+.dc{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--mu);white-space:nowrap}
+.hc{font-weight:600;font-size:11.5px;white-space:nowrap}
+.mt{font-weight:500;font-size:11.5px;line-height:1.4}
+
+/* TAGS */
+.tg{display:inline-block;padding:2px 7px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.3px;margin-right:3px;white-space:nowrap}
+.tp{background:var(--bll);color:var(--bl)}.ts2{background:var(--grl);color:var(--gr)}.tt{background:var(--aml);color:var(--am)}.tl{background:var(--rdl);color:var(--rd)}
+
+/* CHECKBOX — native input for mobile compat */
+.cb-wrap{display:flex;align-items:center;justify-content:center}
+input[type=checkbox].cbx{width:20px;height:20px;cursor:pointer;accent-color:var(--bl);flex-shrink:0;-webkit-tap-highlight-color:transparent;margin:0}
+input[type=checkbox].cbx.gn{accent-color:var(--gr)}
+
+/* PJ SOAL */
+.pjs{font-size:10.5px;color:var(--tl);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+
+/* ZOOM BUTTON */
+.zbtn{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:600;background:var(--zml);color:var(--zm);border:1px solid var(--zmm);text-decoration:none;white-space:nowrap;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.zbtn:hover{background:var(--zmm)}
+.zbtn.empty{opacity:.45;border-style:dashed;cursor:default;pointer-events:none}
+
+/* SPECIAL ROWS */
+tr.rto td{background:#fffbeb}
+tr.rlb td{background:#fff5f5}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--bds);background:var(--sf);color:var(--tx);transition:all .15s;white-space:nowrap;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.btn:hover{background:var(--s2);border-color:var(--tx)}
+.btn:active{transform:scale(.97)}
+.bd2{background:var(--tx);color:#fff;border-color:var(--tx)}.bd2:hover{background:#333}
+.bsm{padding:4px 9px;font-size:10.5px}
+.bwa{background:#25d366;color:#fff;border-color:#25d366}.bwa:hover{background:#1ebe5d}
+.bzm{background:var(--zm);color:#fff;border-color:var(--zm)}.bzm:hover{background:#5b21b6}
+
+/* WA LINK */
+.wl{display:inline-flex;align-items:center;gap:4px;color:var(--gr);font-size:10.5px;font-weight:600;text-decoration:none;padding:3px 9px;border-radius:99px;background:var(--grl);border:1px solid var(--grm);transition:all .15s;white-space:nowrap}
+.wl:hover{background:var(--grm)}
+
+/* EDITABLE WA */
+.wei{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.wi{border:1.5px solid var(--bd);border-radius:6px;padding:4px 8px;font-family:'DM Mono',monospace;font-size:10.5px;background:var(--sf);color:var(--tx);outline:none;transition:border-color .15s;width:130px}
+.wi:focus{border-color:var(--bl)}
+.wi::placeholder{color:var(--fa);font-family:inherit}
+
+/* PJ BLOCK */
+.pjb{display:flex;flex-direction:column;gap:3px}
+.pjr{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--tx);line-height:1.4}
+.pjn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--tll);color:var(--tl);font-size:8px;font-weight:700;flex-shrink:0}
+
+/* SECTION DIVIDER */
+tr.sd td{background:var(--tx)!important;color:#fff!important;font-weight:600;font-size:11px;padding:7px 10px;letter-spacing:.3px}
+
+/* ZOOM SECTION (Kontak tab) */
+.zoom-section{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:var(--sh);padding:1.25rem;margin-top:1.5rem}
+.zoom-section-title{font-size:13px;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.zoom-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.zoom-day-card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px}
+.zoom-day-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);margin-bottom:8px}
+.zoom-slot{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.zoom-slot:last-child{margin-bottom:0}
+.zoom-slot-label{font-size:10px;font-weight:600;color:var(--tx)}
+.zoom-inp-wrap{display:flex;gap:5px;align-items:center}
+.zoom-inp{flex:1;border:1.5px solid var(--bd);border-radius:6px;padding:5px 9px;font-family:inherit;font-size:10.5px;background:var(--sf);color:var(--tx);outline:none;transition:border-color .15s}
+.zoom-inp:focus{border-color:var(--zm)}
+.zoom-inp::placeholder{color:var(--fa)}
+.zoom-save{padding:4px 10px;border-radius:6px;border:1.5px solid var(--zmm);background:var(--zml);color:var(--zm);font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.zoom-save:hover{background:var(--zmm)}
+.zoom-preview{display:flex;align-items:center;gap:5px;margin-top:3px;min-height:20px}
+
+/* CONFIG MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0}
+@media(min-width:640px){.mo{align-items:center;padding:1rem}}
+.mb{background:var(--sf);border-radius:var(--rl) var(--rl) 0 0;padding:1.25rem;width:100%;max-width:580px;box-shadow:0 -8px 40px rgba(0,0,0,.2);position:relative;max-height:92vh;overflow-y:auto}
+@media(min-width:640px){.mb{border-radius:var(--rl)}}
+.mh{width:36px;height:4px;border-radius:99px;background:var(--bds);margin:0 auto 1rem;display:block}
+@media(min-width:640px){.mh{display:none}}
+.mt2{font-size:14px;font-weight:700;margin-bottom:.5rem;padding-right:2rem}
+.mbd{font-size:12px;line-height:1.75;white-space:pre-wrap;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:1rem;color:var(--tx);margin-bottom:1rem;max-height:240px;overflow-y:auto}
+.mx{position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;font-size:20px;color:var(--mu);width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s}
+.mx:hover{background:var(--s2)}
+.ma{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+.cfg-inp{width:100%;border:1.5px solid var(--bd);border-radius:6px;padding:7px 10px;font-family:'DM Mono',monospace;font-size:11px;background:var(--sf);color:var(--tx);outline:none;margin:.5rem 0;transition:border-color .15s}
+.cfg-inp:focus{border-color:var(--bl)}
+.cfg-note{font-size:11px;color:var(--mu);line-height:1.6;background:var(--bll);border:1px solid var(--blm);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:.75rem}
+.cfg-note ol{padding-left:1.25rem;margin-top:.25rem}
+.cfg-note li{margin-bottom:.2rem}
+
+/* MOBILE CARDS */
+.cl{display:none}
+.cd{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px;margin-bottom:8px;box-shadow:var(--sh)}
+.cdh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.cm2{font-weight:600;font-size:12.5px;margin-bottom:3px;line-height:1.4}
+.cp{font-size:11px;color:var(--mu);margin-bottom:6px}
+.cr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--bd)}
+.crl{font-size:10.5px;color:var(--mu);font-weight:500}
+.cpj{font-size:10.5px;color:var(--tl);font-weight:500}
+
+@media(max-width:767px){
+  .ts.jts{display:none}.cl{display:block}
+  .hd,.mn,.pb,.sync-bar{padding-left:.875rem;padding-right:.875rem}
+  .pt{width:55px}.tb{padding:5px 10px;font-size:11.5px}.ht{font-size:13px}
+}
+@media(min-width:768px){.ts.jts{display:block}.cl{display:none}}
+@media print{
+  .hd,.pb,.sync-bar,.hr,.btn,.mo{display:none!important}
+  .pn{display:block!important}
+  body{background:#fff;font-size:10px}
+  .wh,.sd td{background:#333!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ts{box-shadow:none}.cl{display:none!important}.ts.jts{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<!-- MODAL (Template WA / Config) -->
+<div class="mo" id="modal" style="display:none" onclick="if(event.target===this)closeMo()">
+  <div class="mb">
+    <span class="mh"></span>
+    <button class="mx" onclick="closeMo()">&#x2715;</button>
+    <div class="mt2" id="mo-title"></div>
+    <div id="mo-content"></div>
+  </div>
+</div>
+
+<header class="hd">
+  <div class="hdi">
+    <div><div class="ht">&#x1F4CB; Jadwal First Taker UKMPPD 2026</div><div class="hs">20 April &#x2013; 13 Mei 2026 &nbsp;&middot;&nbsp; Sinkronisasi real-time</div></div>
+    <div class="hr">
+      <div class="tabs">
+        <button class="tb on" onclick="swTab('jadwal',this)">Jadwal</button>
+        <button class="tb" onclick="swTab('kontak',this)">Kontak &amp; PJ</button>
+      </div>
+      <button class="btn bd2" id="btn-ct" onclick="window.print()" style="display:none">&#x1F5A8; Cetak</button>
+    </div>
+  </div>
+</header>
+
+<!-- SYNC STATUS BAR -->
+<div class="sync-bar">
+  <div class="sync-inner">
+    <div class="sync-dot" id="sdot"></div>
+    <span id="sync-txt">Menghubungkan ke Google Sheets...</span>
+    <button class="sync-cfg-btn" onclick="openCfg()">&#x2699;&#xFE0F; Konfigurasi</button>
+    <span id="sync-last" style="color:var(--fa);margin-left:auto;font-size:10px"></span>
+  </div>
+</div>
+
+<div class="pb">
+  <div class="pbi">
+    <div class="pi"><span>Soal</span><div class="pt"><div class="pf fb" id="pr-s"></div></div><span class="pp" id="pr-st">0%</span></div>
+    <div class="pi"><span>Dihubungi</span><div class="pt"><div class="pf fa2" id="pr-h"></div></div><span class="pp" id="pr-ht">0%</span></div>
+    <div class="pi" id="sync-pi" style="color:var(--fa);font-style:italic;font-size:10px"></div>
+  </div>
+</div>
+
+<main class="mn">
+  <div id="pn-jadwal" class="pn on"><div class="sg" id="stats"></div><div id="jc"></div></div>
+  <div id="pn-kontak" class="pn"><div id="kc"></div></div>
+</main>
+
+<script>
+/* ════════════════════════════════════════════════
+   CONFIG — paste URL Apps Script di sini
+════════════════════════════════════════════════ */
+let SCRIPT_URL = localStorage.getItem('gs_url') || '';
+
+/* ════════════════════════════════════════════════
+   MASTER DATA
+════════════════════════════════════════════════ */
+const WD = {
+  "Nanda Fadhilah Witris Salamy, dr., M.Si":"087781785797",
+  "Dwimantoro Iman Prilistyo, dr., Sp.U":"08123037407",
+  "Nur Azizah A.S, dr., Sp.KJ":"087853243480",
+  "Dr. Ardyarini Dyah Savitri, dr., Sp.PD, FINASIM":"0811314511",
+  "Bambang Edi Suwito, dr., M.Si.":"08113013900",
+  "dr. Evi Sylvia Awwalia, Sp.PD":"081234768816",
+  "Dewi Masithah, dr., M.Kes":"085731678272",
+  "Faizal Armando Nugroho, dr., Sp.PD":"085641317272",
+  "Hotimah Masdan Salim, dr., Ph.D":"082233625453",
+  "Mustika Chasanatusy Syarifah, dr., Sp.F., M.H":"08122549875",
+  "Mochamad Faishal Riza, dr., Sp.JP (K), FIHA":"",
+  "Moh. Dwinanda Junaedi, dr., Sp.OG":"082229879986",
+  "Paramita Sari, dr., M.Sc":"087855003071",
+  "Nurlisa Naila Aulia, dr., Sp.N":"081259395353",
+  "Mia Puspitasari, dr., Sp.JP":"081330574768",
+  "Dr. Irmawan Farindra, dr., M.Si., AHK (K), FISCM":"081803605575",
+  "RA. Hani Faradis, dr., Sp.M":"081330897760",
+  "Dr. Winawati Eka Putri, dr., Sp.DV, FINSDV. FAADV":"081278019197",
+  "Meidyta Sinantryana Widyaswari, dr., Sp.DV, FINDVSV":"08155077077",
+  "Shobihatus Syifak, dr., Sp.S":"082139905259",
+  "Choirotussanijjah, dr., M.Si":"087856596247",
+  "Prof. Dr. Budi Santoso, dr., Sp.OG., Subsp.F.E.R":""
+};
+const WE = new Set(["Mochamad Faishal Riza, dr., Sp.JP (K), FIHA","Prof. Dr. Budi Santoso, dr., Sp.OG., Subsp.F.E.R"]);
+
+const PJ = {
+  "20-04-2026_PAGI":"Izzcha Maizi Az Zahro","20-04-2026_SIANG":"Unknown People 1",
+  "21-04-2026_PAGI":"Fatchur Rizqi Hamzah","21-04-2026_SIANG":"Aditya Rizky Alfaridzi",
+  "22-04-2026_PAGI":"Muhammad Setio Widodo","22-04-2026_SIANG":"Annisa Salsabila Rahmasari",
+  "23-04-2026_PAGI":"Zulvatunnada","23-04-2026_SIANG":"Fiona Restu Kusumah",
+  "24-04-2026_SIANG":"Teni Citroningrum",
+  "27-04-2026_PAGI":"Teni Citroningrum","27-04-2026_SIANG":"Novi Rianti",
+  "28-04-2026_PAGI":"Bakti Wibowo","28-04-2026_SIANG":"Unknown People 1",
+  "29-04-2026_PAGI":"Muhammad Setio Widodo","29-04-2026_SIANG":"Fiona Restu Kusumah",
+  "30-04-2026_PAGI":"Bakti Wibowo","30-04-2026_SIANG":"Mohammad Rizqi Rifai",
+  "04-05-2026_PAGI":"Diah Rizqi Cahyaningtiyas","04-05-2026_SIANG":"Nida' Aras Dianti",
+  "05-05-2026_SIANG":"Amri Pradipta Alfirdausi",
+  "06-05-2026_PAGI":"Verlina Rahmawati","06-05-2026_SIANG":"Amri Pradipta Alfirdausi",
+  "07-05-2026_PAGI":"Annisa Salsabila Rahmasari",
+  "08-05-2026_PAGI":"Izzcha Maizi Az Zahro","08-05-2026_SIANG":"Mohammad Rizqi Rifai",
+  "11-05-2026_PAGI":"Fatchur Rizqi Hamzah","11-05-2026_SIANG":"Verlina Rahmawati",
+  "12-05-2026_PAGI":"Unknown People 2","12-05-2026_SIANG":"Zahro Junaidy",
+  "13-05-2026_SIANG":"Alfina 'Afifatu Maulida Saif"
+};
+
+const DATA = [
+  {tgl:"20-04-2026",hari:"Senin",pagi:"Endokrin, Metabolik dan Nutrisi 1",pp:"Nanda Fadhilah Witris Salamy, dr., M.Si",siang:"Ginjal dan Saluran Kemih 1",sp:"Dwimantoro Iman Prilistyo, dr., Sp.U",m:1},
+  {tgl:"21-04-2026",hari:"Selasa",pagi:"Psikiatri 1",pp:"Nur Azizah A.S, dr., Sp.KJ",siang:"Hematologi dan Imunologi 1",sp:"Dr. Ardyarini Dyah Savitri, dr., Sp.PD, FINASIM",m:1},
+  {tgl:"22-04-2026",hari:"Rabu",pagi:"Hematologi dan Imunologi 2",pp:"Bambang Edi Suwito, dr., M.Si.",siang:"Ginjal dan Saluran Kemih 2",sp:"dr. Evi Sylvia Awwalia, Sp.PD",m:1},
+  {tgl:"23-04-2026",hari:"Kamis",pagi:"IKP (Metodologi, Statistik, Epid) 1",pp:"Dewi Masithah, dr., M.Kes",siang:"Hematologi dan Imunologi 3",sp:"Faizal Armando Nugroho, dr., Sp.PD",m:1},
+  {tgl:"24-04-2026",hari:"Jumat",pagi:"TRY OUT REKOMENDASI",pp:"\u2014",tp:"to",siang:"Ginjal dan Saluran Kemih 3",sp:"dr. Evi Sylvia Awwalia, Sp.PD",m:1},
+  {tgl:"27-04-2026",hari:"Senin",pagi:"Kardio 1",pp:"Hotimah Masdan Salim, dr., Ph.D",siang:"Kedokteran Forensik, Etika Hukum, SKN & Med 1",sp:"Mustika Chasanatusy Syarifah, dr., Sp.F., M.H",m:2},
+  {tgl:"28-04-2026",hari:"Selasa",pagi:"Kardio 2",pp:"Mochamad Faishal Riza, dr., Sp.JP (K), FIHA",siang:"Reproduksi 1",sp:"Moh. Dwinanda Junaedi, dr., Sp.OG",m:2},
+  {tgl:"29-04-2026",hari:"Rabu",pagi:"IKP (Metodologi, Statistik, Epid) 2",pp:"Dewi Masithah, dr., M.Kes",siang:"Gastrointestinal, Hepatobilier & Pankreas 1",sp:"Dr. Ardyarini Dyah Savitri, dr., Sp.PD, FINASIM",m:2},
+  {tgl:"30-04-2026",hari:"Kamis",pagi:"Kedokteran Forensik, Etika Hukum, SKN & Med 2",pp:"Paramita Sari, dr., M.Sc",siang:"Saraf 1",sp:"Nurlisa Naila Aulia, dr., Sp.N",m:2},
+  {tgl:"01-05-2026",hari:"Jumat",pagi:"LIBUR",pp:"\u2014",tp:"lb",siang:"\u2014",sp:"\u2014",ts:"lb",m:2},
+  {tgl:"04-05-2026",hari:"Senin",pagi:"IKP (Metodologi, Statistik, Epid) 3",pp:"Dewi Masithah, dr., M.Kes",siang:"Kardio 3",sp:"Mia Puspitasari, dr., Sp.JP",m:3},
+  {tgl:"05-05-2026",hari:"Selasa",pagi:"TRY OUT PROGRESS",pp:"\u2014",tp:"to",siang:"Psikiatri 2",sp:"Nur Azizah A.S, dr., Sp.KJ",m:3},
+  {tgl:"06-05-2026",hari:"Rabu",pagi:"Indera 2",pp:"Dr. Irmawan Farindra, dr., M.Si., AHK (K), FISCM",siang:"Indera 1",sp:"RA. Hani Faradis, dr., Sp.M",m:3},
+  {tgl:"07-05-2026",hari:"Kamis",pagi:"Integumen 2",pp:"Dr. Winawati Eka Putri, dr., Sp.DV, FINSDV. FAADV",siang:"\u2014",sp:"\u2014",m:3},
+  {tgl:"08-05-2026",hari:"Jumat",pagi:"Integumen 1",pp:"Meidyta Sinantryana Widyaswari, dr., Sp.DV, FINDVSV",siang:"Saraf 2",sp:"Shobihatus Syifak, dr., Sp.S",m:3},
+  {tgl:"11-05-2026",hari:"Senin",pagi:"Kardio 4",pp:"Mia Puspitasari, dr., Sp.JP",siang:"Endokrin 2",sp:"Choirotussanijjah, dr., M.Si",m:4},
+  {tgl:"12-05-2026",hari:"Selasa",pagi:"Gastrointestinal, Hepatobilier & Pankreas 2",pp:"Paramita Sari, dr., M.Sc",siang:"Kedokteran Forensik, Etika Hukum, SKN & Med 3",sp:"Mustika Chasanatusy Syarifah, dr., Sp.F., M.H",m:4},
+  {tgl:"13-05-2026",hari:"Rabu",pagi:"TRY OUT PROGRESS",pp:"\u2014",tp:"to",siang:"Reproduksi 2",sp:"Prof. Dr. Budi Santoso, dr., Sp.OG., Subsp.F.E.R",m:4}
+];
+const ML={1:"Minggu 1 &nbsp;&middot;&nbsp; 20&ndash;24 April 2026",2:"Minggu 2 &nbsp;&middot;&nbsp; 27 April &ndash; 1 Mei 2026",3:"Minggu 3 &nbsp;&middot;&nbsp; 4&ndash;8 Mei 2026",4:"Minggu 4 &nbsp;&middot;&nbsp; 11&ndash;13 Mei 2026"};
+
+/* ════════════════════════════════════════════════
+   STATE (in-memory, synced from/to GSheets)
+════════════════════════════════════════════════ */
+let STATE = { checkboxes:{}, zoom:{}, wa:{} };
+
+/* ════════════════════════════════════════════════
+   GOOGLE SHEETS SYNC
+   Catatan teknis:
+   - Apps Script GET: fetch biasa (CORS sudah dihandle GAS)
+   - Apps Script POST: harus pakai mode:'no-cors' karena GAS
+     tidak bisa set Access-Control-Allow-Origin pada POST response.
+     Solusi: kirim data via GET parameter (workaround standar GAS)
+════════════════════════════════════════════════ */
+function setSyncStatus(status, msg) {
+  const dot = document.getElementById('sdot');
+  const txt = document.getElementById('sync-txt');
+  if (!dot||!txt) return;
+  dot.className = 'sync-dot ' + status;
+  txt.textContent = msg;
+  if (status === 'ok') {
+    const now = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    const el = document.getElementById('sync-last');
+    if (el) el.textContent = 'Terakhir sync: ' + now;
+  }
+}
+
+async function fetchState() {
+  if (!SCRIPT_URL) {
+    setSyncStatus('err', 'Belum terhubung — klik ⚙️ Konfigurasi');
+    return false;
+  }
+  setSyncStatus('loading', 'Mengambil data dari Google Sheets...');
+  try {
+    // Tambah timestamp agar tidak kena cache browser
+    const url = SCRIPT_URL + '?action=read&t=' + Date.now();
+    const res = await fetch(url, {redirect:'follow'});
+    const text = await res.text();
+    // GAS kadang return HTML error page jika belum di-deploy benar
+    if (text.trim().startsWith('<')) {
+      throw new Error('Apps Script belum di-deploy dengan benar. Pastikan sudah Deploy sebagai Web App dengan akses "Anyone".');
+    }
+    const json = JSON.parse(text);
+    if (!json.ok) throw new Error(json.error || 'Unknown error dari Apps Script');
+    if (json.data.checkboxes) Object.assign(STATE.checkboxes, json.data.checkboxes);
+    if (json.data.zoom) {
+      // zoom disimpan sebagai string URL flat di sheet
+      Object.keys(json.data.zoom).forEach(k => {
+        STATE.zoom[k] = {url: json.data.zoom[k], label:''};
+      });
+    }
+    if (json.data.wa) Object.assign(STATE.wa, json.data.wa);
+    setSyncStatus('ok', 'Tersinkron dengan Google Sheets \u2714\uFE0F');
+    renderCheckboxes();
+    renderZoomButtons();
+    upPr();
+    return true;
+  } catch(e) {
+    setSyncStatus('err', 'Error: ' + e.message);
+    console.error('fetchState error:', e);
+    return false;
+  }
+}
+
+// POST menggunakan GET parameter trick (workaround CORS GAS)
+// Data dikirim sebagai query string, GAS baca dari e.parameter
+async function postState(type, payload) {
+  if (!SCRIPT_URL) return;
+  try {
+    const params = new URLSearchParams({action:'write', type, ...payload});
+    // Gunakan fetch GET dengan data di URL — cara paling reliable untuk GAS
+    const url = SCRIPT_URL + '?' + params.toString() + '&t=' + Date.now();
+    fetch(url, {redirect:'follow'}).catch(()=>{});
+    // Fire-and-forget, tidak perlu tunggu response
+  } catch(e) { console.warn('postState error:', e); }
+}
+
+// Auto-refresh setiap 30 detik
+setInterval(fetchState, 30000);
+
+/* ════════════════════════════════════════════════
+   CHECKBOX LOGIC
+════════════════════════════════════════════════ */
+function getCb(key) { return STATE.checkboxes[key] === '1'; }
+
+function setCb(key, val) {
+  STATE.checkboxes[key] = val ? '1' : '0';
+  // also fallback localStorage
+  try { localStorage.setItem('cb_'+key, val?'1':'0'); } catch(e){}
+  postState('cb', {key, value: val?'1':'0'});
+  upPr();
+}
+
+function onCbChange(key, el) {
+  setCb(key, el.checked);
+}
+
+function renderCheckboxes() {
+  // Update all rendered checkboxes to match STATE
+  Object.keys(PJ).forEach(key => {
+    ['soal_','hub_'].forEach(prefix => {
+      const el = document.getElementById('cbx_'+prefix+key);
+      if (el) el.checked = STATE.checkboxes[prefix+key] === '1';
+    });
+  });
+}
+
+/* ════════════════════════════════════════════════
+   ZOOM LINKS
+════════════════════════════════════════════════ */
+function getZoom(key) { return STATE.zoom[key]||{url:'',label:''}; }
+
+function setZoom(key, url) {
+  STATE.zoom[key] = {url, label:''};
+  try { localStorage.setItem('zoom_'+key, url); } catch(e){}
+  postState('zoom', {key, url, label:''});
+  renderZoomButtons();
+}
+
+function renderZoomButtons() {
+  // Update all zoom buttons
+  document.querySelectorAll('[data-zoom-key]').forEach(el => {
+    const key = el.dataset.zoomKey;
+    const z = getZoom(key);
+    if (z.url) {
+      el.href = z.url;
+      el.classList.remove('empty');
+      el.innerHTML = '&#x1F4F9; Zoom';
+    } else {
+      el.href = '#';
+      el.classList.add('empty');
+      el.innerHTML = '&#x1F4F9; Zoom';
+    }
+  });
+  // Update inputs in zoom section
+  document.querySelectorAll('[data-zoom-inp]').forEach(inp => {
+    const key = inp.dataset.zoomInp;
+    const z = getZoom(key);
+    if (z.url && !inp.value) inp.value = z.url;
+  });
+}
+
+/* ════════════════════════════════════════════════
+   WA NUMBER
+════════════════════════════════════════════════ */
+function getWA(pgr) { return STATE.wa[pgr] || WD[pgr] || ''; }
+function setWA(pgr, num) {
+  STATE.wa[pgr] = num;
+  try { localStorage.setItem('wa_'+pgr, num); } catch(e){}
+  postState('wa', {doctor:pgr, number:num});
+}
+
+/* ════════════════════════════════════════════════
+   WA HELPERS
+════════════════════════════════════════════════ */
+function wfmt(n){if(!n)return '';let c=n.replace(/\D/g,'');if(c.startsWith('0'))c='62'+c.slice(1);return c;}
+
+function greeting() {
+  const h = new Date().toLocaleString('en-US',{timeZone:'Asia/Jakarta',hour:'numeric',hour12:false});
+  const hr = parseInt(h);
+  if (hr >= 5 && hr < 11) return 'pagi';
+  if (hr >= 11 && hr < 15) return 'siang';
+  if (hr >= 15 && hr < 18) return 'sore';
+  return 'malam';
+}
+
+function bTpl(pgr, mat, tgl, hari) {
+  // Keep full name with title
+  const gr = greeting();
+  return 'Assalamualaikum Wr. Wb. Selamat ' + gr + ' ' + pgr + '. Mohon maaf mengganggu waktunya dokter\uD83D\uDE4F\n\n' +
+    'Perkenalkan saya ... perwakilan mahasiswa First Taker UKMPPD yang akan melakukan bimbingan bersama panjenengan.\n\n' +
+    'Permisi dokter, saya izin untuk mengkonfirmasi. Pada hari ' + hari + ', ' + tgl + ', kami terdapat jadwal bimbingan UKMPPD dengan panjenengan untuk materi ' + mat + '. Sekiranya panjenengan berkenan untuk dilaksanakan pada pukul berapa nggih dokter? Mohon arahan dan bimbingannya dokter\uD83D\uDE4F\n\n' +
+    'Terima kasih dokter,\nWassalamualaikum Wr. Wb.\uD83D\uDE4F';
+}
+
+function wHref(pgr, mat, tgl, hari) {
+  const n = getWA(pgr); const f = wfmt(n);
+  if (!f) return '';
+  return 'https://wa.me/'+f+'?text='+encodeURIComponent(bTpl(pgr,mat,tgl,hari));
+}
+
+/* ════════════════════════════════════════════════
+   MODAL
+════════════════════════════════════════════════ */
+let _tpl='';
+function opMo(pgr, mat, tgl, hari) {
+  _tpl = bTpl(pgr, mat, tgl, hari);
+  const hr = wHref(pgr, mat, tgl, hari);
+  document.getElementById('mo-title').textContent = 'Template WA \u2014 ' + pgr;
+  document.getElementById('mo-content').innerHTML =
+    '<div class="mbd">'+_tpl.replace(/\n/g,'<br>')+'</div>' +
+    '<div class="ma">' +
+    '<button class="btn bd2" onclick="cpTpl()">&#x1F4CB; Salin Teks</button>' +
+    (hr?'<a class="btn bwa" href="'+hr+'" target="_blank">&#x1F4AC; WhatsApp</a>':'<span style="color:var(--fa);font-size:11px">Nomor WA belum tersedia</span>') +
+    '</div>';
+  document.getElementById('modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeMo(){document.getElementById('modal').style.display='none';document.body.style.overflow='';}
+function cpTpl(){navigator.clipboard.writeText(_tpl).then(()=>{alert('Teks berhasil disalin!')});}
+
+/* ════════════════════════════════════════════════
+   CONFIG MODAL
+════════════════════════════════════════════════ */
+function openCfg() {
+  document.getElementById('mo-title').textContent = '\u2699\uFE0F Konfigurasi Sinkronisasi Google Sheets';
+  document.getElementById('mo-content').innerHTML =
+    '<div class="cfg-note" style="font-size:11px">' +
+    '<strong>Setup 1 kali — ikuti urutan ini:</strong>' +
+    '<ol style="margin-top:6px">' +
+    '<li>Buat <a href="https://sheets.new" target="_blank" style="color:var(--bl);font-weight:600">Google Sheet baru</a> (klik link ini)</li>' +
+    '<li>Di spreadsheet itu, klik menu <strong>Extensions &rarr; Apps Script</strong></li>' +
+    '<li>Hapus semua kode, paste isi file <strong>apps_script_PASTE_DI_GOOGLE.js</strong></li>' +
+    '<li>Copy ID spreadsheet dari URL-nya, isi di variabel <code>SPREADSHEET_ID</code> di kode</li>' +
+    '<li>Klik <strong>Run &rarr; testSetup</strong> dulu &mdash; izinkan semua permission</li>' +
+    '<li>Klik <strong>Deploy &rarr; New Deployment &rarr; Web App</strong></li>' +
+    '<li>Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong></li>' +
+    '<li>Klik Deploy &rarr; copy <strong>URL</strong> yang muncul &rarr; paste di bawah</li>' +
+    '</ol>' +
+    '<div style="margin-top:8px;padding:6px 8px;background:#fef9ec;border-radius:5px;border:1px solid var(--aml)">' +
+    '&#x26A0;&#xFE0F; Jika sudah pernah deploy, gunakan URL yang sama. Jika ubah kode, klik <strong>Deploy &rarr; Manage deployments &rarr; Edit &rarr; New version</strong>' +
+    '</div></div>' +
+    '<label style="font-size:11px;font-weight:600;color:var(--mu)">URL Web App (dari Apps Script Deploy):</label>' +
+    '<input class="cfg-inp" id="cfg-url-inp" placeholder="https://script.google.com/macros/s/.../exec" value="'+SCRIPT_URL+'">' +
+    '<div class="ma">' +
+    '<button class="btn bd2" onclick="saveCfg()">&#x2705; Simpan &amp; Hubungkan</button>' +
+    '<button class="btn" onclick="closeMo()">Batal</button>' +
+    '</div>';
+  document.getElementById('modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function saveCfg() {
+  const url = document.getElementById('cfg-url-inp').value.trim();
+  SCRIPT_URL = url;
+  localStorage.setItem('gs_url', url);
+  closeMo();
+  fetchState();
+}
+
+/* ════════════════════════════════════════════════
+   WA CELL
+════════════════════════════════════════════════ */
+function waCell(pgr, mat, tgl, hari, uid) {
+  const n = getWA(pgr); const f = wfmt(n); const hr2 = f?wHref(pgr,mat,tgl,hari):'';
+  const sid = uid.replace(/[^a-z0-9]/gi,'_');
+  if (WE.has(pgr)) {
+    return '<div class="wei"><input class="wi" id="wi-'+sid+'" data-pgr="'+pgr.replace(/"/g,'&quot;')+'" data-mat="'+mat.replace(/"/g,'&quot;')+'" data-tgl="'+tgl+'" data-hari="'+hari+'" placeholder="Ketik nomor WA..." value="'+n+'" oninput="wiCh(this)">' +
+      '<a class="wl" href="'+(hr2||'#')+'" '+(hr2?'target="_blank"':'style="opacity:.4;pointer-events:none"')+' id="wb-'+sid+'">&#x1F4AC; WhatsApp</a></div>';
+  }
+  return f?'<a class="wl" href="'+hr2+'" target="_blank">&#x1F4AC; WhatsApp</a>':'<span style="color:var(--fa);font-size:10.5px">\u2014</span>';
+}
+function wiCh(inp) {
+  const pgr = inp.dataset.pgr; const v = inp.value.trim();
+  setWA(pgr, v);
+  const f = wfmt(v);
+  const sid = inp.id.replace('wi-','');
+  const btn = document.getElementById('wb-'+sid);
+  if (btn) {
+    if (f) { btn.href = wHref(pgr, inp.dataset.mat, inp.dataset.tgl, inp.dataset.hari); btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
+    else { btn.href='#'; btn.style.opacity='.4'; btn.style.pointerEvents='none'; }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   PROGRESS
+════════════════════════════════════════════════ */
+function upPr() {
+  const ks = Object.keys(PJ);
+  const ds = ks.filter(k=>STATE.checkboxes['soal_'+k]==='1').length;
+  const dh = ks.filter(k=>STATE.checkboxes['hub_'+k]==='1').length;
+  const ps = Math.round(ds/ks.length*100), ph = Math.round(dh/ks.length*100);
+  document.getElementById('pr-s').style.width=ps+'%';
+  document.getElementById('pr-h').style.width=ph+'%';
+  document.getElementById('pr-st').textContent=ps+'%';
+  document.getElementById('pr-ht').textContent=ph+'%';
+  const e1=document.getElementById('sv-s'); if(e1) e1.textContent=ds+'/'+ks.length;
+  const e2=document.getElementById('sv-h'); if(e2) e2.textContent=dh+'/'+ks.length;
+}
+
+/* ════════════════════════════════════════════════
+   BUILD STATS
+════════════════════════════════════════════════ */
+function bStats() {
+  const t = Object.keys(PJ).length;
+  document.getElementById('stats').innerHTML =
+    '<div class="sc"><div class="sl">Soal Selesai</div><div class="sv" id="sv-s">0/'+t+'</div><div class="ss">semua sesi</div></div>' +
+    '<div class="sc"><div class="sl">Pengajar Dihubungi</div><div class="sv" id="sv-h">0/'+t+'</div><div class="ss">semua sesi</div></div>' +
+    '<div class="sc"><div class="sl">Total Mahasiswa</div><div class="sv">19</div><div class="ss">17 + 2 pending</div></div>' +
+    '<div class="sc"><div class="sl">Total Periode</div><div class="sv">4</div><div class="ss">minggu bimbingan</div></div>';
+}
+
+/* ════════════════════════════════════════════════
+   BUILD JADWAL
+════════════════════════════════════════════════ */
+function zoomBtn(key) {
+  const z = getZoom(key);
+  const hasUrl = !!z.url;
+  return '<a data-zoom-key="'+key+'" class="zbtn'+(hasUrl?'':' empty')+'" href="'+(z.url||'#')+'" '+(hasUrl?'target="_blank"':'')+'>&#x1F4F9; Zoom</a>';
+}
+
+function bJadwal() {
+  let tbl='', cds='', cm=0;
+  DATA.forEach((r,i) => {
+    if (r.m !== cm) {
+      if (cm > 0) { tbl += '</tbody></table></div></div>'; cds += '</div></div>'; }
+      cm = r.m;
+      tbl += '<div class="ws"><div class="wh"><div class="wd"></div>'+ML[cm]+'</div>' +
+             '<div class="ts jts"><table><thead><tr>' +
+             '<th style="width:86px">Tanggal</th><th style="width:50px">Hari</th>' +
+             '<th>Materi Pagi (07.00&#x2013;10.00)</th><th style="width:170px">Pengajar Pagi</th>' +
+             '<th style="width:62px;text-align:center">&#x270F;&#xFE0F; Soal</th>' +
+             '<th style="width:140px">PJ Soal & Hubungi</th>' +
+             '<th style="width:74px;text-align:center">Zoom</th>' +
+             '<th>Materi Siang (12.00&#x2013;15.00)</th><th style="width:170px">Pengajar Siang</th>' +
+             '<th style="width:62px;text-align:center">&#x270F;&#xFE0F; Soal</th>' +
+             '<th style="width:140px">PJ Soal & Hubungi</th>' +
+             '<th style="width:74px;text-align:center">Zoom</th>' +
+             '</tr></thead><tbody>';
+      cds += '<div class="ws"><div class="wh"><div class="wd"></div>'+ML[cm]+'</div><div class="cl">';
+    }
+    const isTO=r.tp==='to', isLB=r.tp==='lb', isSLB=r.ts==='lb'||r.siang==='\u2014';
+    const rc = isLB?'rlb':isTO?'rto':'';
+    const tgP = isTO?'<span class="tg tt">TRY OUT</span>':isLB?'<span class="tg tl">LIBUR</span>':'<span class="tg tp">PAGI</span>';
+    const tgS = isSLB?'':'<span class="tg ts2">SIANG</span>';
+    const kP = r.tgl+'_PAGI', kS = r.tgl+'_SIANG';
+    const pjP = PJ[kP]||'', pjS = PJ[kS]||'';
+
+    // Use native <input type=checkbox> for mobile compat
+    const cbP = (!isTO&&!isLB&&r.pp!=='\u2014'&&pjP)
+      ? '<div class="cb-wrap"><input type="checkbox" class="cbx" id="cbx_soal_'+kP+'" '+(getCb('soal_'+kP)?'checked':'')+' onchange="onCbChange(\'soal_'+kP+'\',this)"></div>'
+      : '<div style="text-align:center;color:var(--fa);font-size:10px">\u2014</div>';
+    const cbS = (!isSLB&&r.sp!=='\u2014'&&pjS)
+      ? '<div class="cb-wrap"><input type="checkbox" class="cbx gn" id="cbx_soal_'+kS+'" '+(getCb('soal_'+kS)?'checked':'')+' onchange="onCbChange(\'soal_'+kS+'\',this)"></div>'
+      : '<div style="text-align:center;color:var(--fa);font-size:10px">\u2014</div>';
+
+    const pjPh = pjP ? '<div class="pjs" title="'+pjP+'">&#x1F464; '+pjP+'</div>' : '<span style="color:var(--fa);font-size:10px">\u2014</span>';
+    const pjSh = pjS ? '<div class="pjs" title="'+pjS+'">&#x1F464; '+pjS+'</div>' : '<span style="color:var(--fa);font-size:10px">\u2014</span>';
+
+    tbl += '<tr class="'+rc+'">' +
+      '<td class="dc">'+r.tgl+'</td><td class="hc">'+r.hari+'</td>' +
+      '<td>'+tgP+' <span class="mt">'+r.pagi+'</span></td>' +
+      '<td style="font-size:11px;font-weight:500">'+r.pp+'</td>' +
+      '<td>'+cbP+'</td><td>'+pjPh+'</td>' +
+      '<td style="text-align:center">'+(!isLB&&!isTO?zoomBtn(kP):'')+'</td>' +
+      '<td>'+tgS+' <span class="mt">'+(r.siang||'\u2014')+'</span></td>' +
+      '<td style="font-size:11px;font-weight:500">'+r.sp+'</td>' +
+      '<td>'+cbS+'</td><td>'+pjSh+'</td>' +
+      '<td style="text-align:center">'+(!isSLB?zoomBtn(kS):'')+'</td>' +
+      '</tr>';
+
+    // MOBILE CARDS
+    if (!isLB) {
+      cds += '<div class="cd">' +
+        '<div class="cdh"><div><span class="dc">'+r.tgl+'</span> <strong style="font-size:11.5px">'+r.hari+'</strong></div>' +
+        '<span class="tg '+(isTO?'tt':'tp')+'">'+(isTO?'TRY OUT':'PAGI')+'</span></div>' +
+        '<div class="cm2">'+r.pagi+'</div><div class="cp">'+r.pp+'</div>' +
+        (!isTO&&r.pp!=='\u2014'&&pjP?
+          '<div class="cr"><span class="crl">&#x270F;&#xFE0F; Soal</span>' +
+          '<input type="checkbox" class="cbx" id="cbx_soal_'+kP+'_m" '+(getCb('soal_'+kP)?'checked':'')+' onchange="onCbChange(\'soal_'+kP+'\',this)"></div>':'')+
+        (pjP?'<div class="cr"><span class="crl">&#x1F464; PJ</span><span class="cpj">'+pjP+'</span></div>':'')+
+        (!isTO?'<div class="cr"><span class="crl">&#x1F4F9; Zoom</span>'+zoomBtn(kP)+'</div>':'')+
+        '</div>';
+    }
+    if (!isSLB) {
+      cds += '<div class="cd">' +
+        '<div class="cdh"><div><span class="dc">'+r.tgl+'</span> <strong style="font-size:11.5px">'+r.hari+'</strong></div>' +
+        '<span class="tg ts2">SIANG</span></div>' +
+        '<div class="cm2">'+r.siang+'</div><div class="cp">'+r.sp+'</div>' +
+        (r.sp!=='\u2014'&&pjS?
+          '<div class="cr"><span class="crl">&#x270F;&#xFE0F; Soal</span>' +
+          '<input type="checkbox" class="cbx gn" id="cbx_soal_'+kS+'_m" '+(getCb('soal_'+kS)?'checked':'')+' onchange="onCbChange(\'soal_'+kS+'\',this)"></div>':'')+
+        (pjS?'<div class="cr"><span class="crl">&#x1F464; PJ</span><span class="cpj">'+pjS+'</span></div>':'')+
+        '<div class="cr"><span class="crl">&#x1F4F9; Zoom</span>'+zoomBtn(kS)+'</div>'+
+        '</div>';
+    }
+  });
+  tbl += '</tbody></table></div></div>';
+  cds += '</div></div>';
+  document.getElementById('jc').innerHTML = tbl + cds;
+}
+
+/* ════════════════════════════════════════════════
+   BUILD KONTAK
+════════════════════════════════════════════════ */
+function bKontak() {
+  const rows = [];
+  DATA.forEach((r,i)=>{
+    if (r.pp!=='\u2014') rows.push({...r,i,ses:'PAGI',pgr:r.pp,mat:r.pagi});
+    if (r.sp!=='\u2014'&&r.siang!=='\u2014') rows.push({...r,i,ses:'SIANG',pgr:r.sp,mat:r.siang});
+  });
+
+  let h = '<div class="ts"><table><thead><tr>' +
+    '<th style="width:86px">Tanggal</th><th style="width:50px">Hari</th><th style="width:55px">Sesi</th>' +
+    '<th>Pengajar</th><th style="width:150px">WhatsApp</th>' +
+    '<th style="width:72px;text-align:center">&#x2705; Dihubungi</th>' +
+    '<th style="width:72px;text-align:center">&#x1F4AC; Template</th>' +
+    '<th style="width:155px">PJ Soal &amp; Penghubung</th>' +
+    '</tr></thead><tbody>';
+
+  let cm=0;
+  rows.forEach(r=>{
+    if (r.m!==cm) {
+      cm=r.m;
+      h += '<tr class="sd"><td colspan="8">'+ML[cm].replace(/&nbsp;/g,' ').replace(/&middot;/g,'·').replace(/&ndash;/g,'–')+'</td></tr>';
+    }
+    const isp=r.ses==='PAGI';
+    const tg=isp?'<span class="tg tp">PAGI</span>':'<span class="tg ts2">SIANG</span>';
+    const pk=r.tgl+'_'+r.ses; const pjNm=PJ[pk]||'\u2014'; const hk='hub_'+pk;
+    const cbH='<div class="cb-wrap"><input type="checkbox" class="cbx '+(isp?'':'gn')+'" id="cbx_'+hk+'" '+(getCb(hk)?'checked':'')+' onchange="onCbChange(\''+hk+'\',this)"></div>';
+    const uid=(r.tgl+'_'+r.ses).replace(/-/g,'');
+    const pE=r.pgr.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const mE=r.mat.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const tBtn='<div class="cb-wrap"><button class="btn bsm" onclick="opMo(\''+pE+'\',\''+mE+'\',\''+r.tgl+'\',\''+r.hari+'\')">&#x1F4DD; Lihat</button></div>';
+    const pjH=pjNm!=='\u2014'?'<div class="pjb"><div class="pjr"><span class="pjn">&#x1F464;</span>'+pjNm+'</div></div>':'<span style="color:var(--fa);font-size:10px">\u2014</span>';
+    h += '<tr><td class="dc">'+r.tgl+'</td><td class="hc">'+r.hari+'</td><td>'+tg+'</td>' +
+      '<td style="font-size:11px;font-weight:500">'+r.pgr+'</td>' +
+      '<td>'+waCell(r.pgr,r.mat,r.tgl,r.hari,uid)+'</td>' +
+      '<td>'+cbH+'</td><td>'+tBtn+'</td><td>'+pjH+'</td></tr>';
+  });
+  h += '</tbody></table></div>';
+
+  // ZOOM SECTION
+  h += '<div class="zoom-section"><div class="zoom-section-title">&#x1F4F9; Link Zoom per Sesi<span style="font-size:10.5px;font-weight:400;color:var(--mu);margin-left:8px">Isi link, otomatis tersinkron ke tombol Zoom di tab Jadwal</span></div><div class="zoom-grid" id="zoom-grid">';
+
+  const zoomSlots = DATA.filter(r=>!r.tp&&!r.ts&&r.pp!=='\u2014');
+  zoomSlots.forEach(r=>{
+    const kP=r.tgl+'_PAGI', kS=r.tgl+'_SIANG';
+    const hasSiang = r.sp!=='\u2014'&&r.siang!=='\u2014';
+    h += '<div class="zoom-day-card"><div class="zoom-day-label">'+r.hari+', '+r.tgl+'</div>';
+    // Pagi slot
+    h += '<div class="zoom-slot"><div class="zoom-slot-label"><span class="tg tp" style="margin-right:4px">PAGI</span>'+r.pagi.substring(0,35)+(r.pagi.length>35?'...':'')+'</div>' +
+      '<div class="zoom-inp-wrap">' +
+      '<input class="zoom-inp" data-zoom-inp="'+kP+'" placeholder="https://zoom.us/j/..." value="'+(getZoom(kP).url||'')+'" oninput="saveZoom(\''+kP+'\',this.value)">' +
+      '</div>' +
+      '<div class="zoom-preview">'+zoomBtn(kP)+'</div></div>';
+    // Siang slot
+    if (hasSiang) {
+      h += '<div class="zoom-slot"><div class="zoom-slot-label"><span class="tg ts2" style="margin-right:4px">SIANG</span>'+r.siang.substring(0,35)+(r.siang.length>35?'...':'')+'</div>' +
+        '<div class="zoom-inp-wrap">' +
+        '<input class="zoom-inp" data-zoom-inp="'+kS+'" placeholder="https://zoom.us/j/..." value="'+(getZoom(kS).url||'')+'" oninput="saveZoom(\''+kS+'\',this.value)">' +
+        '</div>' +
+        '<div class="zoom-preview">'+zoomBtn(kS)+'</div></div>';
+    }
+    h += '</div>';
+  });
+  h += '</div></div>';
+  document.getElementById('kc').innerHTML = h;
+}
+
+function saveZoom(key, url) {
+  clearTimeout(window._zoomTimer);
+  window._zoomTimer = setTimeout(() => { setZoom(key, url.trim()); }, 600);
+}
+
+/* ════════════════════════════════════════════════
+   TAB
+════════════════════════════════════════════════ */
+function swTab(tab, btn) {
+  document.querySelectorAll('.pn').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pn-'+tab).classList.add('on');
+  btn.classList.add('on');
+  const bc=document.getElementById('btn-ct');
+  if(bc) bc.style.display=(tab==='jadwal'&&window.innerWidth>=768)?'inline-flex':'none';
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+bStats();
+bJadwal();
+bKontak();
+upPr();
+if (window.innerWidth >= 768) document.getElementById('btn-ct').style.display='inline-flex';
+
+// Load from GSheets (or show config prompt)
+fetchState().then(ok=>{
+  if (!ok && !SCRIPT_URL) {
+    // First time: show config hint
+    setTimeout(openCfg, 1200);
+  }
+});
+</script>
+</body>
+</html>
