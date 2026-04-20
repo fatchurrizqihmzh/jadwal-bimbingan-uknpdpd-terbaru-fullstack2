@@ -349,6 +349,10 @@ async function fetchState() {
       });
     }
     if (json.data.wa) Object.assign(STATE.wa, json.data.wa);
+    // Persist ke localStorage sebagai offline cache
+    try {
+      Object.keys(json.data.checkboxes||{}).forEach(k=>localStorage.setItem('cb_'+k, json.data.checkboxes[k]));
+    } catch(e){}
     setSyncStatus('ok', 'Tersinkron dengan Google Sheets \u2714\uFE0F');
     renderCheckboxes();
     renderZoomButtons();
@@ -380,7 +384,12 @@ setInterval(fetchState, 30000);
 /* ════════════════════════════════════════════════
    CHECKBOX LOGIC
 ════════════════════════════════════════════════ */
-function getCb(key) { return STATE.checkboxes[key] === '1'; }
+function getCb(key) {
+  // STATE (dari GSheets) prioritas utama
+  if (STATE.checkboxes[key] !== undefined) return STATE.checkboxes[key] === '1';
+  // Fallback ke localStorage saat GSheets belum selesai load
+  try { return localStorage.getItem('cb_'+key) === '1'; } catch(e){ return false; }
+}
 
 function setCb(key, val) {
   STATE.checkboxes[key] = val ? '1' : '0';
@@ -391,16 +400,24 @@ function setCb(key, val) {
 }
 
 function onCbChange(key, el) {
-  setCb(key, el.checked);
+  const val = el.checked;
+  STATE.checkboxes[key] = val ? '1' : '0';
+  // Sync semua elemen lain yang punya data-cbkey sama (desktop & mobile)
+  document.querySelectorAll('[data-cbkey="'+key+'"]').forEach(other => {
+    if (other !== el && other.checked !== val) other.checked = val;
+  });
+  // Simpan ke GSheets
+  try { localStorage.setItem('cb_'+key, val?'1':'0'); } catch(e){}
+  postState('cb', {key, value: val?'1':'0'});
+  upPr();
 }
 
 function renderCheckboxes() {
-  // Update all rendered checkboxes to match STATE
-  Object.keys(PJ).forEach(key => {
-    ['soal_','hub_'].forEach(prefix => {
-      const el = document.getElementById('cbx_'+prefix+key);
-      if (el) el.checked = STATE.checkboxes[prefix+key] === '1';
-    });
+  // data-cbkey selector catches BOTH desktop and mobile checkboxes
+  document.querySelectorAll('[data-cbkey]').forEach(el => {
+    const key = el.dataset.cbkey;
+    const should = STATE.checkboxes[key] === '1';
+    if (el.checked !== should) el.checked = should;
   });
 }
 
@@ -626,10 +643,10 @@ function bJadwal() {
 
     // Use native <input type=checkbox> for mobile compat
     const cbP = (!isTO&&!isLB&&r.pp!=='\u2014'&&pjP)
-      ? '<div class="cb-wrap"><input type="checkbox" class="cbx" id="cbx_soal_'+kP+'" '+(getCb('soal_'+kP)?'checked':'')+' onchange="onCbChange(\'soal_'+kP+'\',this)"></div>'
+      ? '<div class="cb-wrap"><input type="checkbox" class="cbx" id="cbx_soal_'+kP+'" data-cbkey="soal_'+kP+'" '+(getCb('soal_'+kP)?'checked':'')+' onchange="onCbChange(\'soal_'+kP+'\',this)"></div>'
       : '<div style="text-align:center;color:var(--fa);font-size:10px">\u2014</div>';
     const cbS = (!isSLB&&r.sp!=='\u2014'&&pjS)
-      ? '<div class="cb-wrap"><input type="checkbox" class="cbx gn" id="cbx_soal_'+kS+'" '+(getCb('soal_'+kS)?'checked':'')+' onchange="onCbChange(\'soal_'+kS+'\',this)"></div>'
+      ? '<div class="cb-wrap"><input type="checkbox" class="cbx gn" id="cbx_soal_'+kS+'" data-cbkey="soal_'+kS+'" '+(getCb('soal_'+kS)?'checked':'')+' onchange="onCbChange(\'soal_'+kS+'\',this)"></div>'
       : '<div style="text-align:center;color:var(--fa);font-size:10px">\u2014</div>';
 
     const pjPh = pjP ? '<div class="pjs" title="'+pjP+'">&#x1F464; '+pjP+'</div>' : '<span style="color:var(--fa);font-size:10px">\u2014</span>';
@@ -655,7 +672,7 @@ function bJadwal() {
         '<div class="cm2">'+r.pagi+'</div><div class="cp">'+r.pp+'</div>' +
         (!isTO&&r.pp!=='\u2014'&&pjP?
           '<div class="cr"><span class="crl">&#x270F;&#xFE0F; Soal</span>' +
-          '<input type="checkbox" class="cbx" id="cbx_soal_'+kP+'_m" '+(getCb('soal_'+kP)?'checked':'')+' onchange="onCbChange(\'soal_'+kP+'\',this)"></div>':'')+
+          '<input type="checkbox" class="cbx" id="cbx_soal_'+kP+'_m" data-cbkey="soal_'+kP+'" '+(getCb('soal_'+kP)?'checked':'')+' onchange="onCbChange(\'soal_'+kP+'\',this)"></div>':'')+
         (pjP?'<div class="cr"><span class="crl">&#x1F464; PJ</span><span class="cpj">'+pjP+'</span></div>':'')+
         (!isTO?'<div class="cr"><span class="crl">&#x1F4F9; Zoom</span>'+zoomBtn(kP)+'</div>':'')+
         '</div>';
@@ -667,7 +684,7 @@ function bJadwal() {
         '<div class="cm2">'+r.siang+'</div><div class="cp">'+r.sp+'</div>' +
         (r.sp!=='\u2014'&&pjS?
           '<div class="cr"><span class="crl">&#x270F;&#xFE0F; Soal</span>' +
-          '<input type="checkbox" class="cbx gn" id="cbx_soal_'+kS+'_m" '+(getCb('soal_'+kS)?'checked':'')+' onchange="onCbChange(\'soal_'+kS+'\',this)"></div>':'')+
+          '<input type="checkbox" class="cbx gn" id="cbx_soal_'+kS+'_m" data-cbkey="soal_'+kS+'" '+(getCb('soal_'+kS)?'checked':'')+' onchange="onCbChange(\'soal_'+kS+'\',this)"></div>':'')+
         (pjS?'<div class="cr"><span class="crl">&#x1F464; PJ</span><span class="cpj">'+pjS+'</span></div>':'')+
         '<div class="cr"><span class="crl">&#x1F4F9; Zoom</span>'+zoomBtn(kS)+'</div>'+
         '</div>';
@@ -705,7 +722,7 @@ function bKontak() {
     const isp=r.ses==='PAGI';
     const tg=isp?'<span class="tg tp">PAGI</span>':'<span class="tg ts2">SIANG</span>';
     const pk=r.tgl+'_'+r.ses; const pjNm=PJ[pk]||'\u2014'; const hk='hub_'+pk;
-    const cbH='<div class="cb-wrap"><input type="checkbox" class="cbx '+(isp?'':'gn')+'" id="cbx_'+hk+'" '+(getCb(hk)?'checked':'')+' onchange="onCbChange(\''+hk+'\',this)"></div>';
+    const cbH='<div class="cb-wrap"><input type="checkbox" class="cbx '+(isp?'':'gn')+'" id="cbx_'+hk+'" data-cbkey="'+hk+'" '+(getCb(hk)?'checked':'')+' onchange="onCbChange(\''+hk+'\',this)"></div>';
     const uid=(r.tgl+'_'+r.ses).replace(/-/g,'');
     const pE=r.pgr.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const mE=r.mat.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
@@ -766,16 +783,25 @@ function swTab(tab, btn) {
 /* ════════════════════════════════════════════════
    INIT
 ════════════════════════════════════════════════ */
+// ── INIT: muat localStorage dulu agar render pertama sudah benar ──
+try {
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('cb_')) {
+      STATE.checkboxes[k.slice(3)] = localStorage.getItem(k);
+    }
+  }
+} catch(e) {}
+
 bStats();
 bJadwal();
 bKontak();
 upPr();
 if (window.innerWidth >= 768) document.getElementById('btn-ct').style.display='inline-flex';
 
-// Load from GSheets (or show config prompt)
+// Load dari GSheets — update STATE & re-render checkbox
 fetchState().then(ok=>{
   if (!ok && !SCRIPT_URL) {
-    // First time: show config hint
     setTimeout(openCfg, 1200);
   }
 });
