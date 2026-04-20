@@ -57,13 +57,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 /* TABLE */
 .ts{overflow-x:auto;border-radius:var(--rl);box-shadow:var(--shm);-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;background:var(--sf);font-size:12px}
-table th{background:var(--s2);font-weight:600;font-size:10px;color:var(--mu);padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--bd);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-table td{padding:8px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+table th{background:var(--s2);font-weight:600;font-size:10px;color:var(--mu);padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--bd);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-right:1px solid var(--bd)}
+table td{padding:7px 9px;border-bottom:1px solid var(--bd);border-right:1px solid #f0ede6;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--s2)}
 .dc{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--mu);white-space:nowrap}
 .hc{font-weight:600;font-size:11.5px;white-space:nowrap}
-.mt{font-weight:500;font-size:11.5px;line-height:1.4}
+.mt{font-weight:500;font-size:11px;line-height:1.4;word-break:break-word}
 
 /* TAGS */
 .tg{display:inline-block;padding:2px 7px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.3px;margin-right:3px;white-space:nowrap}
@@ -305,12 +305,10 @@ let STATE = { checkboxes:{}, zoom:{}, wa:{} };
 
 /* ════════════════════════════════════════════════
    GOOGLE SHEETS SYNC
-   Catatan teknis:
-   - Apps Script GET: fetch biasa (CORS sudah dihandle GAS)
-   - Apps Script POST: harus pakai mode:'no-cors' karena GAS
-     tidak bisa set Access-Control-Allow-Origin pada POST response.
-     Solusi: kirim data via GET parameter (workaround standar GAS)
+   Fix: dirty-key tracking agar server tidak overwrite
+   centang yang baru saja dibuat user (race condition fix)
 ════════════════════════════════════════════════ */
+const DIRTY = new Set(); // keys yang belum dikonfirmasi server
 function setSyncStatus(status, msg) {
   const dot = document.getElementById('sdot');
   const txt = document.getElementById('sync-txt');
@@ -341,19 +339,25 @@ async function fetchState() {
     }
     const json = JSON.parse(text);
     if (!json.ok) throw new Error(json.error || 'Unknown error dari Apps Script');
-    if (json.data.checkboxes) Object.assign(STATE.checkboxes, json.data.checkboxes);
+    // Merge checkboxes — SKIP dirty keys (user baru centang, belum dikonfirmasi)
+    const serverCb = json.data.checkboxes || {};
+    Object.keys(serverCb).forEach(k => {
+      if (!DIRTY.has(k)) {
+        STATE.checkboxes[k] = serverCb[k];
+      }
+    });
+    // Zoom links
     if (json.data.zoom) {
-      // zoom disimpan sebagai string URL flat di sheet
       Object.keys(json.data.zoom).forEach(k => {
         STATE.zoom[k] = {url: json.data.zoom[k], label:''};
       });
     }
     if (json.data.wa) Object.assign(STATE.wa, json.data.wa);
-    // Persist ke localStorage sebagai offline cache
+    // Persist semua ke localStorage (termasuk dirty — STATE sudah benar)
     try {
-      Object.keys(json.data.checkboxes||{}).forEach(k=>localStorage.setItem('cb_'+k, json.data.checkboxes[k]));
+      Object.keys(STATE.checkboxes).forEach(k => localStorage.setItem('cb_'+k, STATE.checkboxes[k]));
     } catch(e){}
-    setSyncStatus('ok', 'Tersinkron dengan Google Sheets \u2714\uFE0F');
+    setSyncStatus('ok', 'Tersinkron ✔️');
     renderCheckboxes();
     renderZoomButtons();
     upPr();
@@ -371,11 +375,22 @@ async function postState(type, payload) {
   if (!SCRIPT_URL) return;
   try {
     const params = new URLSearchParams({action:'write', type, ...payload});
-    // Gunakan fetch GET dengan data di URL — cara paling reliable untuk GAS
     const url = SCRIPT_URL + '?' + params.toString() + '&t=' + Date.now();
-    fetch(url, {redirect:'follow'}).catch(()=>{});
-    // Fire-and-forget, tidak perlu tunggu response
-  } catch(e) { console.warn('postState error:', e); }
+    // Tunggu konfirmasi server sebelum hapus dari dirty set
+    const res = await fetch(url, {redirect:'follow'});
+    const txt = await res.text();
+    // Jika server konfirmasi OK, hapus dari dirty
+    if (type === 'cb' && payload.key) {
+      try {
+        const j = JSON.parse(txt);
+        if (j.ok) DIRTY.delete(payload.key);
+      } catch(e) { DIRTY.delete(payload.key); } // hapus juga jika parse gagal
+    }
+  } catch(e) {
+    console.warn('postState error:', e);
+    // Pada error network, hapus dari dirty agar tidak block selamanya
+    if (type === 'cb' && payload.key) DIRTY.delete(payload.key);
+  }
 }
 
 // Auto-refresh setiap 30 detik
@@ -402,12 +417,15 @@ function setCb(key, val) {
 function onCbChange(key, el) {
   const val = el.checked;
   STATE.checkboxes[key] = val ? '1' : '0';
-  // Sync semua elemen lain yang punya data-cbkey sama (desktop & mobile)
+  // Mark dirty DULU agar fetchState tidak overwrite
+  DIRTY.add(key);
+  // Sync semua elemen lain (desktop & mobile) sekaligus
   document.querySelectorAll('[data-cbkey="'+key+'"]').forEach(other => {
     if (other !== el && other.checked !== val) other.checked = val;
   });
-  // Simpan ke GSheets
+  // Simpan ke localStorage langsung
   try { localStorage.setItem('cb_'+key, val?'1':'0'); } catch(e){}
+  // Kirim ke GSheets (await di background, konfirmasi hapus dirty)
   postState('cb', {key, value: val?'1':'0'});
   upPr();
 }
@@ -622,15 +640,19 @@ function bJadwal() {
       cm = r.m;
       tbl += '<div class="ws"><div class="wh"><div class="wd"></div>'+ML[cm]+'</div>' +
              '<div class="ts jts"><table><thead><tr>' +
-             '<th style="width:86px">Tanggal</th><th style="width:50px">Hari</th>' +
-             '<th>Materi Pagi (07.00&#x2013;10.00)</th><th style="width:170px">Pengajar Pagi</th>' +
-             '<th style="width:62px;text-align:center">&#x270F;&#xFE0F; Soal</th>' +
-             '<th style="width:140px">PJ Soal & Hubungi</th>' +
-             '<th style="width:74px;text-align:center">Zoom</th>' +
-             '<th>Materi Siang (12.00&#x2013;15.00)</th><th style="width:170px">Pengajar Siang</th>' +
-             '<th style="width:62px;text-align:center">&#x270F;&#xFE0F; Soal</th>' +
-             '<th style="width:140px">PJ Soal & Hubungi</th>' +
-             '<th style="width:74px;text-align:center">Zoom</th>' +
+             '<th style="width:86px">Tanggal</th><th style="width:52px">Hari</th>' +
+             '<th style="width:52px;border-right:2px solid var(--bds);background:#dbeafe;color:#1e40af">Sesi</th>' +
+             '<th style="background:#dbeafe;color:#1e40af">Materi</th>' +
+             '<th style="width:165px;background:#dbeafe;color:#1e40af">Pengajar</th>' +
+             '<th style="width:60px;text-align:center;background:#dbeafe;color:#1e40af">&#x270F;&#xFE0F;</th>' +
+             '<th style="width:138px;background:#dbeafe;color:#1e40af">PJ</th>' +
+             '<th style="width:68px;text-align:center;background:#dbeafe;color:#1e40af;border-right:3px solid #93c5fd">Zoom</th>' +
+             '<th style="width:52px;border-right:2px solid var(--bds);background:#dcfce7;color:#166534">Sesi</th>' +
+             '<th style="background:#dcfce7;color:#166534">Materi</th>' +
+             '<th style="width:165px;background:#dcfce7;color:#166534">Pengajar</th>' +
+             '<th style="width:60px;text-align:center;background:#dcfce7;color:#166534">&#x270F;&#xFE0F;</th>' +
+             '<th style="width:138px;background:#dcfce7;color:#166534">PJ</th>' +
+             '<th style="width:68px;text-align:center;background:#dcfce7;color:#166534">Zoom</th>' +
              '</tr></thead><tbody>';
       cds += '<div class="ws"><div class="wh"><div class="wd"></div>'+ML[cm]+'</div><div class="cl">';
     }
@@ -652,14 +674,19 @@ function bJadwal() {
     const pjPh = pjP ? '<div class="pjs" title="'+pjP+'">&#x1F464; '+pjP+'</div>' : '<span style="color:var(--fa);font-size:10px">\u2014</span>';
     const pjSh = pjS ? '<div class="pjs" title="'+pjS+'">&#x1F464; '+pjS+'</div>' : '<span style="color:var(--fa);font-size:10px">\u2014</span>';
 
+    // Styling sisi batas kanan Zoom pagi
+    const bdR = 'border-right:3px solid #bfdbfe';
     tbl += '<tr class="'+rc+'">' +
-      '<td class="dc">'+r.tgl+'</td><td class="hc">'+r.hari+'</td>' +
-      '<td>'+tgP+' <span class="mt">'+r.pagi+'</span></td>' +
-      '<td style="font-size:11px;font-weight:500">'+r.pp+'</td>' +
+      '<td class="dc" style="vertical-align:middle">'+r.tgl+'</td>' +
+      '<td class="hc" style="vertical-align:middle">'+r.hari+'</td>' +
+      '<td style="vertical-align:middle;border-right:2px solid var(--bds)">'+tgP+'</td>' +
+      '<td><span class="mt">'+r.pagi+'</span></td>' +
+      '<td style="font-size:10.5px;font-weight:500;vertical-align:middle">'+r.pp+'</td>' +
       '<td>'+cbP+'</td><td>'+pjPh+'</td>' +
-      '<td style="text-align:center">'+(!isLB&&!isTO?zoomBtn(kP):'')+'</td>' +
-      '<td>'+tgS+' <span class="mt">'+(r.siang||'\u2014')+'</span></td>' +
-      '<td style="font-size:11px;font-weight:500">'+r.sp+'</td>' +
+      '<td style="text-align:center;'+bdR+'">'+(!isLB&&!isTO?zoomBtn(kP):'')+'</td>' +
+      '<td style="vertical-align:middle;border-right:2px solid var(--bds)">'+tgS+'</td>' +
+      '<td><span class="mt">'+(r.siang||'\u2014')+'</span></td>' +
+      '<td style="font-size:10.5px;font-weight:500;vertical-align:middle">'+r.sp+'</td>' +
       '<td>'+cbS+'</td><td>'+pjSh+'</td>' +
       '<td style="text-align:center">'+(!isSLB?zoomBtn(kS):'')+'</td>' +
       '</tr>';
