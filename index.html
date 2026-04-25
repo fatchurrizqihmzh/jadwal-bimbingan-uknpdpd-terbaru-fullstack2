@@ -375,6 +375,8 @@ const ML_DATES={
 /* ════ STATE ════ */
 let STATE={checkboxes:{},zoom:{},wa:{}};
 const DIRTY=new Set();
+const DIRTY_TIME={}; // timestamp of last user interaction per key
+const DIRTY_TTL=15000; // 15s protection window after user clicks
 
 /* ════ STORAGE ════ */
 function lg(k){try{return localStorage.getItem('ft5_'+k)||''}catch{return''}}
@@ -399,7 +401,14 @@ async function fetchState(){
     const j=JSON.parse(txt);
     if(!j.ok)throw new Error(j.error||'Error GAS');
     const sc=j.data.checkboxes||{};
-    Object.keys(sc).forEach(k=>{if(!DIRTY.has(k))STATE.checkboxes[k]=sc[k];});
+    const now=Date.now();
+    Object.keys(sc).forEach(k=>{
+      // Skip if user changed this within DIRTY_TTL ms
+      const lastChange=DIRTY_TIME[k]||0;
+      if(!DIRTY.has(k)&&(now-lastChange)>DIRTY_TTL){
+        STATE.checkboxes[k]=sc[k];
+      }
+    });
     if(j.data.zoom)Object.keys(j.data.zoom).forEach(k=>{STATE.zoom[k]={url:j.data.zoom[k],label:''};});
     if(j.data.wa)Object.assign(STATE.wa,j.data.wa);
     try{Object.keys(STATE.checkboxes).forEach(k=>localStorage.setItem('ft5_cb_'+k,STATE.checkboxes[k]));}catch(e){}
@@ -414,8 +423,15 @@ async function postState(type,payload){
     const params=new URLSearchParams({action:'write',type,...payload});
     const res=await fetch(SCRIPT_URL+'?'+params+'&t='+Date.now(),{redirect:'follow'});
     const txt=await res.text();
-    if(type==='cb'&&payload.key){try{if(JSON.parse(txt).ok)DIRTY.delete(payload.key);}catch{DIRTY.delete(payload.key);}}
-  }catch(e){if(type==='cb'&&payload.key)DIRTY.delete(payload.key);}
+    if(type==='cb'&&payload.key){
+      try{
+        if(JSON.parse(txt).ok){
+          // Only clear from DIRTY after TTL has passed (server confirmed)
+          setTimeout(()=>DIRTY.delete(payload.key), DIRTY_TTL);
+        }
+      }catch{setTimeout(()=>DIRTY.delete(payload.key), DIRTY_TTL);}
+    }
+  }catch(e){if(type==='cb'&&payload.key)setTimeout(()=>DIRTY.delete(payload.key),DIRTY_TTL);}
 }
 setInterval(fetchState,30000);
 
@@ -428,6 +444,7 @@ function onCbChange(key,el){
   const val=el.checked;
   STATE.checkboxes[key]=val?'1':'0';
   DIRTY.add(key);
+  DIRTY_TIME[key]=Date.now(); // record exact time of user interaction
   document.querySelectorAll('[data-cbkey="'+key+'"]').forEach(o=>{if(o!==el&&o.checked!==val)o.checked=val;});
   try{localStorage.setItem('ft5_cb_'+key,val?'1':'0');}catch{}
   postState('cb',{key,value:val?'1':'0'});
